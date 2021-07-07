@@ -1,0 +1,32 @@
+---
+resources:
+- name: ci-image
+  type: registry-image
+  source:
+    repository: busybox
+- name: automation
+  type: git
+  icon: github
+  source:
+    uri: https://github.com/emmanuelguerin/deploy-automation
+jobs:
+  - name: deploy
+    plan:
+    - get: automation
+    - get: ci-image
+    - task: deploy
+      params:
+        COLOR: dummy
+        ENV_NAME: sandbox
+        VERSION:
+      image: ci-image
+      config:
+        platform: linux
+        run:
+          path: sh
+          args:
+            - "-c"
+            - |
+              echo "Values: $COLOR $ENV_NAME $VERSION"
+              sleep 10
+              echo "deploy"
