@@ -27,12 +27,50 @@ resources:
   source:
     branch: prod
     uri: https://github.com/emmanuelguerin/deploy-automation
+- name: trigger-sandbox
+  type: semver
+  source:
+    driver:      git
+    uri:         git@github.com:emmanuelguerin/pipelines-compass.git
+    branch:      master
+    file:        versions/sandbox-trigger
+    private_key: |
+      ((github-versions-private-key))
+
+    git_user: "Emmanuel Guerin <e.guerin@criteo.com>"
+- name: trigger-staging
+  type: semver
+  source:
+    driver:      git
+    uri:         git@github.com:emmanuelguerin/pipelines-compass.git
+    branch:      master
+    file:        versions/staging-trigger
+    private_key: |
+      ((github-versions-private-key))
+
+    git_user: "Emmanuel Guerin <e.guerin@criteo.com>"
+- name: trigger-prod
+  type: semver
+  source:
+    driver:      git
+    uri:         git@github.com:emmanuelguerin/pipelines-compass.git
+    branch:      master
+    file:        versions/prod-trigger
+    private_key: |
+      ((github-versions-private-key))
+
+    git_user: "Emmanuel Guerin <e.guerin@criteo.com>"
+
 jobs:
 - name: repipe-sandbox
   plan:
   - get: config
     trigger: true
+    paths:
+    - sandbox/*
   - get: automation
+    trigger: true
+  - get: trigger-sandbox
     trigger: true
   - task: prepare-pipeline
     input_mapping:
@@ -45,15 +83,19 @@ jobs:
     var_files:
     - automation/ci/deploy-infra/config/versions.yml
     - config/sandbox/settings.yml
-    vars:
-      env-name: sandbox
-      source_branch: master
-      next_env: staging
+    # vars:
+    #   env-name: sandbox
+    #   source_branch: master
+    #   next_env: staging
 - name: repipe-staging
   plan:
   - get: config
     trigger: true
+    paths:
+    - staging/*
   - get: automation-staging
+    trigger: true
+  - get: trigger-staging
     trigger: true
   - task: prepare-pipeline
     input_mapping:
@@ -66,27 +108,31 @@ jobs:
     var_files:
     - automation-staging/ci/deploy-infra/config/versions.yml
     - config/sandbox/settings.yml
-    vars:
-      env-name: staging
-      source_branch: staging
-      next_env: prod
+    # vars:
+    #   env-name: staging
+    #   source_branch: staging
+    #   next_env: prod
 - name: repipe-prod
   plan:
   - get: config
     trigger: true
+    paths:
+    - prod/*
   - get: automation-prod
+    trigger: true
+  - get: trigger-prod
     trigger: true
   - task: prepare-pipeline
     input_mapping:
       automation: automation-prod
     file: automation-prod/ci/repipe/tasks/prepare-pipeline.yml
     params:
-      ENV_NAME: staging
+      ENV_NAME: prod
   - set_pipeline: deploy-prod
     file: prepared-pipeline/assembled-pipeline.yml
     var_files:
     - automation-prod/ci/deploy-infra/config/versions.yml
     - config/prod/settings.yml
-    vars:
-      env-name: prod
-      source_branch: prod
+    # vars:
+    #   env-name: prod
+    #   source_branch: prod

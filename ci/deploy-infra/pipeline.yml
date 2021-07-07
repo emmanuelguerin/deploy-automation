@@ -10,10 +10,23 @@ resources:
   source:
     uri: https://github.com/emmanuelguerin/deploy-automation
     branch: ((source_branch))
+- name: trigger
+  type: semver
+  source:
+    driver:      git
+    uri:         git@github.com:emmanuelguerin/pipelines-compass.git
+    branch:      master
+    file:        versions/((env-name))-trigger
+    private_key: |
+      ((github-versions-private-key))
+
+    git_user: "Emmanuel Guerin <e.guerin@criteo.com>"
 jobs:
   - name: deploy
     plan:
     - get: automation
+      trigger: true
+    - get: trigger
       trigger: true
     - get: ci-image
     - task: deploy
