@@ -14,5 +14,5 @@ outputs:
   - name: prepared-pipeline
 
 run:
-  path: automation/ci/recipe/tasks/prepare-pipeline.sh
+  path: automation/ci/repipe/tasks/prepare-pipeline.sh
 

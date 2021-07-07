@@ -35,6 +35,8 @@ jobs:
   - get: automation
     trigger: true
   - task: prepare-pipeline
+    input_mapping:
+      automation: automation
     file: automation/ci/repipe/tasks/prepare-pipeline.yml
     params:
       ENV_NAME: sandbox
