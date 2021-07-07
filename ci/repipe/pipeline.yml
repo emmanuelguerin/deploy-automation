@@ -55,8 +55,14 @@ jobs:
     trigger: true
   - get: automation-staging
     trigger: true
+  - task: prepare-pipeline
+    input_mapping:
+      automation: automation-staging
+    file: automation-staging/ci/repipe/tasks/prepare-pipeline.yml
+    params:
+      ENV_NAME: staging
   - set_pipeline: deploy-staging
-    file: automation-staging/ci/deploy-infra/pipeline.yml
+    file: prepared-pipeline/assembled-pipeline.yml
     var_files:
     - automation-staging/ci/deploy-infra/config/versions.yml
     - config/sandbox/settings.yml
@@ -70,8 +76,14 @@ jobs:
     trigger: true
   - get: automation-prod
     trigger: true
+  - task: prepare-pipeline
+    input_mapping:
+      automation: automation-prod
+    file: automation-prod/ci/repipe/tasks/prepare-pipeline.yml
+    params:
+      ENV_NAME: staging
   - set_pipeline: deploy-prod
-    file: automation-prod/ci/deploy-infra/pipeline.yml
+    file: prepared-pipeline/assembled-pipeline.yml
     var_files:
     - automation-prod/ci/deploy-infra/config/versions.yml
     - config/prod/settings.yml
