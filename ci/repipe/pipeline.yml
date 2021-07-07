@@ -13,6 +13,19 @@ resources:
   type: git
   icon: github
   source:
+    branch: master
+    uri: https://github.com/emmanuelguerin/deploy-automation
+- name: automation-staging
+  type: git
+  icon: github
+  source:
+    branch: staging
+    uri: https://github.com/emmanuelguerin/deploy-automation
+- name: automation-prod
+  type: git
+  icon: github
+  source:
+    branch: prod
     uri: https://github.com/emmanuelguerin/deploy-automation
 jobs:
 - name: repipe-sandbox
@@ -28,3 +41,32 @@ jobs:
     - config/sandbox/settings.yml
     vars:
       env-name: sandbox
+      source_branch: master
+- name: repipe-staging
+  plan:
+  - get: config
+    trigger: true
+  - get: automation-staging
+    trigger: true
+  - set_pipeline: deploy-staging
+    file: automation/ci/deploy-infra/pipeline.yml
+    var_files:
+    - automation/ci/deploy-infra/config/versions.yml
+    - config/sandbox/settings.yml
+    vars:
+      env-name: staging
+      source_branch: staging
+- name: repipe-prod
+  plan:
+  - get: config
+    trigger: true
+  - get: automation-prod
+    trigger: true
+  - set_pipeline: deploy-prod
+    file: automation/ci/deploy-infra/pipeline.yml
+    var_files:
+    - automation/ci/deploy-infra/config/versions.yml
+    - config/prod/settings.yml
+    vars:
+      env-name: prod
+      source_branch: prod

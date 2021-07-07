@@ -9,6 +9,7 @@ resources:
   icon: github
   source:
     uri: https://github.com/emmanuelguerin/deploy-automation
+    branch: ((source_branch))
 jobs:
   - name: deploy
     plan:
