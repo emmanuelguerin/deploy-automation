@@ -34,8 +34,12 @@ jobs:
     trigger: true
   - get: automation
     trigger: true
+  - task: prepare-pipeline
+    file: automation/ci/repipe/tasks/prepare-pipeline.yml
+    params:
+      ENV_NAME: sandbox
   - set_pipeline: deploy-sandbox
-    file: automation/ci/deploy-infra/pipeline.yml
+    file: prepared-pipeline/assembled-pipeline.yml
     var_files:
     - automation/ci/deploy-infra/config/versions.yml
     - config/sandbox/settings.yml

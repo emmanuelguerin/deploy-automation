@@ -1,0 +1,18 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: gstack/gk-ops
+params:
+  ENV_NAME:
+inputs:
+  - name: automation
+
+outputs:
+  - name: prepared-pipeline
+
+run:
+  path: automation/ci/recipe/tasks/prepare-pipeline.sh
+
