@@ -1,9 +1,9 @@
 ---
 resources:
-- name: ci-image
-  type: registry-image
-  source:
-    repository: busybox
+# - name: ci-image
+#   type: registry-image
+#   source:
+#     repository: busybox
 - name: config
   type: git
   icon: github
@@ -18,11 +18,13 @@ jobs:
 - name: repipe-sandbox
   plan:
   - get: config
+    trigger: true
   - get: automation
+    trigger: true
   - set_pipeline: deploy-sandbox
     file: automation/ci/deploy-infra/pipeline.yml
     var_files:
     - automation/ci/deploy-infra/config/versions.yml
     - config/sandbox/settings.yml
     vars:
-      env_name: sandbox
+      env-name: sandbox
