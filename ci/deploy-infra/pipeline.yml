@@ -16,7 +16,7 @@ jobs:
     - get: ci-image
     - task: deploy
       params:
-        COLOR: dummy
+        COLOR: ((color))
         ENV_NAME: sandbox
         VERSION: ((component-version))
       image: ci-image
