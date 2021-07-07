@@ -1,0 +1,28 @@
+---
+resources:
+- name: ci-image
+  type: registry-image
+  source:
+    repository: busybox
+- name: config
+  type: git
+  icon: github
+  source:
+    uri: https://github.com/emmanuelguerin/deploy-config
+- name: automation
+  type: git
+  icon: github
+  source:
+    uri: https://github.com/emmanuelguerin/deploy-automation
+jobs:
+- name: repipe-sandbox
+  plan:
+  - get: config
+  - get: automation
+  - set_pipeline: deploy-sandbox
+    file: automation/ci/deploy-infra/pipeline.yml
+    var_files:
+    - automation/ci/deploy-infra/config/versions.yml
+    - config/sandbox/settings.yml
+    vars:
+      env_name: sandbox
