@@ -42,6 +42,7 @@ jobs:
     vars:
       env-name: sandbox
       source_branch: master
+      next_env: staging
 - name: repipe-staging
   plan:
   - get: config
@@ -49,13 +50,14 @@ jobs:
   - get: automation-staging
     trigger: true
   - set_pipeline: deploy-staging
-    file: automation/ci/deploy-infra/pipeline.yml
+    file: automation-staging/ci/deploy-infra/pipeline.yml
     var_files:
-    - automation/ci/deploy-infra/config/versions.yml
+    - automation-staging/ci/deploy-infra/config/versions.yml
     - config/sandbox/settings.yml
     vars:
       env-name: staging
       source_branch: staging
+      next_env: prod
 - name: repipe-prod
   plan:
   - get: config
@@ -63,9 +65,9 @@ jobs:
   - get: automation-prod
     trigger: true
   - set_pipeline: deploy-prod
-    file: automation/ci/deploy-infra/pipeline.yml
+    file: automation-prod/ci/deploy-infra/pipeline.yml
     var_files:
-    - automation/ci/deploy-infra/config/versions.yml
+    - automation-prod/ci/deploy-infra/config/versions.yml
     - config/prod/settings.yml
     vars:
       env-name: prod

@@ -1,0 +1,20 @@
+---
+jobs:
+  - (( append ))
+  - name: ship-to-((next_env))
+    plan:
+      - in_parallel:
+          - get: automation
+            passed: [ deploy ]
+ 
+      - put: ((next_env))-automation
+        params:
+         repository: automation
+resources:
+  - (( append ))
+  - name: ((next_env))-automation
+    type: git
+    source:
+      uri: git@github.com:emmanuelguerin/deploy-automation.git
+      branch: ((next_env))
+      private_key: ((github-automation-private-key))
